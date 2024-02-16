@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"time"
@@ -76,5 +77,73 @@ func (client *ApiClientImpl) Get(body []byte) {
 		client.responseCode = client.httpResponse.StatusCode
 	}
 	fmt.Println("Response Code:", client.responseCode)
+	defer client.httpResponse.Body.Close()
 
+	respBody, err := io.ReadAll(client.httpResponse.Body)
+	if common.CheckNoError(err) {
+		fmt.Println("Response Body:", string(respBody))
+	} else {
+		fmt.Println("Error reading response")
+	}
+
+}
+
+func (client *ApiClientImpl) Post(body []byte) {
+	var err error
+	client.httpRequest, err = http.NewRequest("POST", client.url, bytes.NewBuffer(body))
+	if common.CheckNoError(err) {
+		client.httpResponse, err = client.httpClient.Do(client.httpRequest)
+	}
+	if common.CheckNoError(err) {
+		client.responseCode = client.httpResponse.StatusCode
+	}
+	fmt.Println("Response Code:", client.responseCode)
+	defer client.httpResponse.Body.Close()
+
+	respBody, err := io.ReadAll(client.httpResponse.Body)
+	if common.CheckNoError(err) {
+		fmt.Println("Response Body:", string(respBody))
+	} else {
+		fmt.Println("Error reading response")
+	}
+}
+
+func (client *ApiClientImpl) Put(body []byte) {
+	var err error
+	client.httpRequest, err = http.NewRequest("PUT", client.url, bytes.NewBuffer(body))
+	if common.CheckNoError(err) {
+		client.httpResponse, err = client.httpClient.Do(client.httpRequest)
+	}
+	if common.CheckNoError(err) {
+		client.responseCode = client.httpResponse.StatusCode
+	}
+	fmt.Println("Response Code:", client.responseCode)
+	defer client.httpResponse.Body.Close()
+
+	respBody, err := io.ReadAll(client.httpResponse.Body)
+	if common.CheckNoError(err) {
+		fmt.Println("Response Body:", string(respBody))
+	} else {
+		fmt.Println("Error reading response")
+	}
+}
+
+func (client *ApiClientImpl) Delete(body []byte) {
+	var err error
+	client.httpRequest, err = http.NewRequest("DELETE", client.url, bytes.NewBuffer(body))
+	if common.CheckNoError(err) {
+		client.httpResponse, err = client.httpClient.Do(client.httpRequest)
+	}
+	if common.CheckNoError(err) {
+		client.responseCode = client.httpResponse.StatusCode
+	}
+	fmt.Println("Response Code:", client.responseCode)
+	defer client.httpResponse.Body.Close()
+
+	respBody, err := io.ReadAll(client.httpResponse.Body)
+	if common.CheckNoError(err) {
+		fmt.Println("Response Body:", string(respBody))
+	} else {
+		fmt.Println("Error reading response")
+	}
 }
