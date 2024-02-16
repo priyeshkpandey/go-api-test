@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -28,7 +29,16 @@ type ApiClientImpl struct {
 	timeout      time.Duration
 }
 
-func (client ApiClientImpl) CreateClient() error {
+func NewApiClient() *ApiClientImpl {
+	return &ApiClientImpl{}
+}
+
+func (client *ApiClientImpl) WithUrl(url string) *ApiClientImpl {
+	client.url = url
+	return client
+}
+
+func (client *ApiClientImpl) CreateClient() error {
 	dialer := &net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
@@ -56,7 +66,7 @@ func (client ApiClientImpl) CreateClient() error {
 	return nil
 }
 
-func (client ApiClientImpl) Get(body []byte) {
+func (client *ApiClientImpl) Get(body []byte) {
 	var err error
 	client.httpRequest, err = http.NewRequest("GET", client.url, bytes.NewBuffer(body))
 	if common.CheckNoError(err) {
@@ -65,5 +75,6 @@ func (client ApiClientImpl) Get(body []byte) {
 	if common.CheckNoError(err) {
 		client.responseCode = client.httpResponse.StatusCode
 	}
+	fmt.Println("Response Code:", client.responseCode)
 
 }
